@@ -32,9 +32,29 @@ app.post("/clientes", (req, res) => {
     res.status(201).send("Clientes cadastrados com sucesso")
 })
 
+// consultar cliente pelo id 
 
+app.get("/clientes/:id", (req, res) => {
+    const index = consultarId(req.params.id);
+    res.status(200).json(clientes[index])
+});
 
+// atualizar cadastro 
 
+app.put("/clientes/:id", (req, res) => {
+    const index = consultarId(req.params.id);
+clientes[index].nome = req.body.nome;
+res.status(200).json(clientes)
+})
+
+// excluir cliente 
+
+app.delete("/clientes/:id", (req, res) => {
+    const index = consultarId(req.params.id);
+  clientes.splice(index, 1);
+  res.status(200).send("Cadastro excluido com sucesso!")
+
+})
 
 
 
@@ -43,3 +63,21 @@ app.post("/clientes", (req, res) => {
 
 
 export default app; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function consultarId(idCliente) {
+    var index =  clientes.findIndex((cliente) => cliente.id === Number(idCliente)); 
+    return index
+}
