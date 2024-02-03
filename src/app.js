@@ -1,16 +1,26 @@
 import express from 'express'
 
+import dbConexao from './dbconfig/dbConnect.js';
+
+import cliente from './models/Clientes.js';
+
+const conexao = await dbConexao(); 
+
+conexao.on("error", (erro) => {
+console.error("Erro na conexao!", erro)
+});
+
+
+conexao.once("open", () => {
+    console.log("Conexao efetuada!")
+})
+
 const app = express(); 
 
 
 app.use(express.json())
 
 
-
-const clientes = [
-    { id: 1, nome: "Joao Batista"},
-    { id: 2, nome: "Erick"}
-]
 
 
 // rota principal
@@ -21,8 +31,11 @@ res.status(200).send("Api-clientes");
 // rota cliente (consultar todos os clientes)
 
 
-app.get("/clientes", (req, res) => {
-res.status(200).json(clientes);
+app.get("/clientes", async (req, res) => {
+
+const listarClientes = await cliente.find({})
+
+    res.status(200).json(listarClientes);
 })
 
 // cadastrar novo cliente
@@ -65,19 +78,3 @@ app.delete("/clientes/:id", (req, res) => {
 export default app; 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-function consultarId(idCliente) {
-    var index =  clientes.findIndex((cliente) => cliente.id === Number(idCliente)); 
-    return index
-}
